@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MagicECertCAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MagicECertCA.dbo.PersonalData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="PersonalData">
+    <Key>
+      <PropertyRef Name="uId" />
+      <PropertyRef Name="ca_serial_number" />
+      <PropertyRef Name="ca_id" />
+      <PropertyRef Name="caPriKey" />
+      <PropertyRef Name="caPubkey" />
+      <PropertyRef Name="caEnable" />
+    </Key>
+    <Property Name="uId" Type="int" Nullable="false" />
+    <Property Name="ca_serial_number" Type="varchar(max)" Nullable="false" />
+    <Property Name="ca_id" Type="int" Nullable="false" />
+    <Property Name="caPriKey" Type="varchar(max)" Nullable="false" />
+    <Property Name="caPubkey" Type="varchar(max)" Nullable="false" />
+    <Property Name="caEnable" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="uId" />
+    </Key>
+    <Property Name="uId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="uName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="uPasswd" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="uEmail" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="X509Certificate">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="float" Nullable="false" />
+    <Property Name="serial_number" Type="varchar(max)" Nullable="false" />
+    <Property Name="signature_algorithm" Type="varchar(max)" Nullable="false" />
+    <Property Name="issuer_name" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="validity_period" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="subject_name" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="public_key" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="extensions" Type="nvarchar" MaxLength="255" />
+    <Property Name="signature" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_PersonalData_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="PersonalData" Type="Self.PersonalData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="uId" />
+      </Principal>
+      <Dependent Role="PersonalData">
+        <PropertyRef Name="uId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PersonalData_X509Certificate">
+    <End Role="X509Certificate" Type="Self.X509Certificate" Multiplicity="1" />
+    <End Role="PersonalData" Type="Self.PersonalData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="X509Certificate">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PersonalData">
+        <PropertyRef Name="ca_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="spDeleteCA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="spDeletePersonData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="uId" Type="int" Mode="In" />
+    <Parameter Name="caId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="spDeleteUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="spInsertPersonalData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PublicKey" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="PrivateKey" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="SerialNumber" Type="varchar(max)" Mode="In" />
+    <Parameter Name="UId" Type="int" Mode="In" />
+    <Parameter Name="CAId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="spInsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserName" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Password" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Mail" Type="nvarchar(max)" Mode="In" />
+  </Function>
+  <Function Name="spInsertX509Cert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="version" Type="float" Mode="In" />
+    <Parameter Name="serial" Type="varchar(max)" Mode="In" />
+    <Parameter Name="signatureAlgorithm" Type="varchar(max)" Mode="In" />
+    <Parameter Name="issuer" Type="varchar" Mode="In" />
+    <Parameter Name="validity" Type="varchar" Mode="In" />
+    <Parameter Name="subject" Type="nvarchar" Mode="In" />
+    <Parameter Name="public" Type="varchar" Mode="In" />
+    <Parameter Name="extensions" Type="nvarchar" Mode="In" />
+    <Parameter Name="signature" Type="varchar(max)" Mode="In" />
+  </Function>
+  <Function Name="spUpdateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="int" Mode="In" />
+    <Parameter Name="UserName" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Password" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Mail" Type="nvarchar(max)" Mode="In" />
+  </Function>
+  <Function Name="spUpdateX509Cert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ID" Type="int" Mode="In" />
+    <Parameter Name="Version" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="SerialNumber" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="SignatureAlgorithm" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="IssuerName" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="ValidityPeriod" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="PublicKey" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="SubjectuniqueID" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Extensions" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="Signature" Type="nvarchar(max)" Mode="In" />
+  </Function>
+  <EntityContainer Name="MagicECertCAModelStoreContainer">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="X509Certificate" EntityType="Self.X509Certificate" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PersonalData" EntityType="Self.PersonalData" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [PersonalData].[uId] AS [uId], 
+    [PersonalData].[ca_serial_number] AS [ca_serial_number], 
+    [PersonalData].[ca_id] AS [ca_id], 
+    [PersonalData].[caPriKey] AS [caPriKey], 
+    [PersonalData].[caPubkey] AS [caPubkey], 
+    [PersonalData].[caEnable] AS [caEnable]
+    FROM [dbo].[PersonalData] AS [PersonalData]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_PersonalData_User" Association="Self.FK_PersonalData_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="PersonalData" EntitySet="PersonalData" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PersonalData_X509Certificate" Association="Self.FK_PersonalData_X509Certificate">
+      <End Role="X509Certificate" EntitySet="X509Certificate" />
+      <End Role="PersonalData" EntitySet="PersonalData" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="35a1b9e9c26f42b18d0e23c6088d0fcc" Name="Diagram1">
+        <EntityTypeShape EntityType="MagicECertCAModel.User" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicECertCAModel.X509Certificate" Width="1.5" PointX="0.75" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicECertCAModel.PersonalData" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <AssociationConnector Association="MagicECertCAModel.FK_PersonalData_User" ManuallyRouted="false" />
+        <AssociationConnector Association="MagicECertCAModel.FK_PersonalData_X509Certificate" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MagicECertCAModel.sysdiagram" Width="1.5" PointX="10.75" PointY="4.25" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

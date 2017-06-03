@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="MagicECertCAEntities-Web.config Connection String" description="MagicECertCAEntities Connection String used in web.config by the application to access the database." defaultValue="Data Source=mssql5.gear.host;Initial Catalog=MagicECertCA;User ID=magicecertca;Password=Cw07j~mb7_3J" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\workspace\\visualstudio\\FPBMTTC_FinalC-M_vs2017_ServiceAPI\\FPBMTTC_FinalC-M_vs2017_ServiceAPI\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='MagicECertCAEntities']/@connectionString" />
+  </parameter>
+</parameters>

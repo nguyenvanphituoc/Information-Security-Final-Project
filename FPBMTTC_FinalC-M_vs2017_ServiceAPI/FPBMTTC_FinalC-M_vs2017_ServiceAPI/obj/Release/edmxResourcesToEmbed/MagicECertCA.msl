@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MagicECertCAModelStoreContainer" CdmEntityContainer="MagicECertCAEntities">
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="MagicECertCAModel.User">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="uId" ColumnName="uId" />
+          <ScalarProperty Name="uName" ColumnName="uName" />
+          <ScalarProperty Name="uPasswd" ColumnName="uPasswd" />
+          <ScalarProperty Name="uEmail" ColumnName="uEmail" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="X509Certificate">
+      <EntityTypeMapping TypeName="MagicECertCAModel.X509Certificate">
+        <MappingFragment StoreEntitySet="X509Certificate">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="serial_number" ColumnName="serial_number" />
+          <ScalarProperty Name="signature_algorithm" ColumnName="signature_algorithm" />
+          <ScalarProperty Name="issuer_name" ColumnName="issuer_name" />
+          <ScalarProperty Name="validity_period" ColumnName="validity_period" />
+          <ScalarProperty Name="subject_name" ColumnName="subject_name" />
+          <ScalarProperty Name="public_key" ColumnName="public_key" />
+          <ScalarProperty Name="extensions" ColumnName="extensions" />
+          <ScalarProperty Name="signature" ColumnName="signature" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PersonalDatas">
+      <EntityTypeMapping TypeName="MagicECertCAModel.PersonalData">
+        <MappingFragment StoreEntitySet="PersonalData">
+          <ScalarProperty Name="uId" ColumnName="uId" />
+          <ScalarProperty Name="ca_serial_number" ColumnName="ca_serial_number" />
+          <ScalarProperty Name="ca_id" ColumnName="ca_id" />
+          <ScalarProperty Name="caPriKey" ColumnName="caPriKey" />
+          <ScalarProperty Name="caPubkey" ColumnName="caPubkey" />
+          <ScalarProperty Name="caEnable" ColumnName="caEnable" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="spDeleteCA" FunctionName="MagicECertCAModel.Store.spDeleteCA" />
+    <FunctionImportMapping FunctionImportName="spDeletePersonData" FunctionName="MagicECertCAModel.Store.spDeletePersonData" />
+    <FunctionImportMapping FunctionImportName="spDeleteUser" FunctionName="MagicECertCAModel.Store.spDeleteUser" />
+    <FunctionImportMapping FunctionImportName="spInsertPersonalData" FunctionName="MagicECertCAModel.Store.spInsertPersonalData" />
+    <FunctionImportMapping FunctionImportName="spInsertUser" FunctionName="MagicECertCAModel.Store.spInsertUser" />
+    <FunctionImportMapping FunctionImportName="spInsertX509Cert" FunctionName="MagicECertCAModel.Store.spInsertX509Cert" />
+    <FunctionImportMapping FunctionImportName="spUpdateUser" FunctionName="MagicECertCAModel.Store.spUpdateUser" />
+    <FunctionImportMapping FunctionImportName="spUpdateX509Cert" FunctionName="MagicECertCAModel.Store.spUpdateX509Cert" />
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="MagicECertCAModel.sysdiagram">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="definition" ColumnName="definition" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

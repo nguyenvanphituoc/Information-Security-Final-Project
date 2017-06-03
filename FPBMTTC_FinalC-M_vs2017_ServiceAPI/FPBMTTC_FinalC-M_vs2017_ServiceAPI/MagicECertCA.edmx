@@ -1,0 +1,391 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MagicECertCAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MagicECertCA.dbo.PersonalData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PersonalData">
+          <Key>
+            <PropertyRef Name="uId" />
+            <PropertyRef Name="ca_serial_number" />
+            <PropertyRef Name="ca_id" />
+            <PropertyRef Name="caPriKey" />
+            <PropertyRef Name="caPubkey" />
+            <PropertyRef Name="caEnable" />
+          </Key>
+          <Property Name="uId" Type="int" Nullable="false" />
+          <Property Name="ca_serial_number" Type="varchar(max)" Nullable="false" />
+          <Property Name="ca_id" Type="int" Nullable="false" />
+          <Property Name="caPriKey" Type="varchar(max)" Nullable="false" />
+          <Property Name="caPubkey" Type="varchar(max)" Nullable="false" />
+          <Property Name="caEnable" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="uId" />
+          </Key>
+          <Property Name="uId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="uName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="uPasswd" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="uEmail" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="X509Certificate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="float" Nullable="false" />
+          <Property Name="serial_number" Type="varchar(max)" Nullable="false" />
+          <Property Name="signature_algorithm" Type="varchar(max)" Nullable="false" />
+          <Property Name="issuer_name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="validity_period" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="subject_name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="public_key" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="extensions" Type="nvarchar" MaxLength="255" />
+          <Property Name="signature" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_PersonalData_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="PersonalData" Type="Self.PersonalData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="uId" />
+            </Principal>
+            <Dependent Role="PersonalData">
+              <PropertyRef Name="uId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalData_X509Certificate">
+          <End Role="X509Certificate" Type="Self.X509Certificate" Multiplicity="1" />
+          <End Role="PersonalData" Type="Self.PersonalData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="X509Certificate">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PersonalData">
+              <PropertyRef Name="ca_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="spDeleteCA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spDeletePersonData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="uId" Type="int" Mode="In" />
+          <Parameter Name="caId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spDeleteUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spInsertPersonalData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PublicKey" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="PrivateKey" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="SerialNumber" Type="varchar(max)" Mode="In" />
+          <Parameter Name="UId" Type="int" Mode="In" />
+          <Parameter Name="CAId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spInsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserName" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Mail" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="spInsertX509Cert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="version" Type="float" Mode="In" />
+          <Parameter Name="serial" Type="varchar(max)" Mode="In" />
+          <Parameter Name="signatureAlgorithm" Type="varchar(max)" Mode="In" />
+          <Parameter Name="issuer" Type="varchar" Mode="In" />
+          <Parameter Name="validity" Type="varchar" Mode="In" />
+          <Parameter Name="subject" Type="nvarchar" Mode="In" />
+          <Parameter Name="public" Type="varchar" Mode="In" />
+          <Parameter Name="extensions" Type="nvarchar" Mode="In" />
+          <Parameter Name="signature" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="spUpdateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+          <Parameter Name="UserName" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Mail" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="spUpdateX509Cert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="Version" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="SerialNumber" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="SignatureAlgorithm" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="IssuerName" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="ValidityPeriod" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="PublicKey" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="SubjectuniqueID" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Extensions" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Signature" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <EntityContainer Name="MagicECertCAModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="X509Certificate" EntityType="Self.X509Certificate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PersonalData" EntityType="Self.PersonalData" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PersonalData].[uId] AS [uId], 
+    [PersonalData].[ca_serial_number] AS [ca_serial_number], 
+    [PersonalData].[ca_id] AS [ca_id], 
+    [PersonalData].[caPriKey] AS [caPriKey], 
+    [PersonalData].[caPubkey] AS [caPubkey], 
+    [PersonalData].[caEnable] AS [caEnable]
+    FROM [dbo].[PersonalData] AS [PersonalData]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_PersonalData_User" Association="Self.FK_PersonalData_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="PersonalData" EntitySet="PersonalData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalData_X509Certificate" Association="Self.FK_PersonalData_X509Certificate">
+            <End Role="X509Certificate" EntitySet="X509Certificate" />
+            <End Role="PersonalData" EntitySet="PersonalData" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MagicECertCAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="uId" />
+          </Key>
+          <Property Name="uId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="uName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="uPasswd" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="uEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="PersonalDatas" Relationship="Self.FK_PersonalData_User" FromRole="User" ToRole="PersonalData" />
+        </EntityType>
+        <EntityType Name="X509Certificate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Double" Nullable="false" />
+          <Property Name="serial_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="signature_algorithm" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="issuer_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="validity_period" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="subject_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="public_key" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="extensions" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="signature" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="PersonalDatas" Relationship="Self.FK_PersonalData_X509Certificate" FromRole="X509Certificate" ToRole="PersonalData" />
+        </EntityType>
+        <EntityType Name="PersonalData">
+          <Key>
+            <PropertyRef Name="uId" />
+            <PropertyRef Name="ca_serial_number" />
+            <PropertyRef Name="ca_id" />
+            <PropertyRef Name="caPriKey" />
+            <PropertyRef Name="caPubkey" />
+            <PropertyRef Name="caEnable" />
+          </Key>
+          <Property Name="uId" Type="Int32" Nullable="false" />
+          <Property Name="ca_serial_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ca_id" Type="Int32" Nullable="false" />
+          <Property Name="caPriKey" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="caPubkey" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="caEnable" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_PersonalData_User" FromRole="PersonalData" ToRole="User" />
+          <NavigationProperty Name="X509Certificate" Relationship="Self.FK_PersonalData_X509Certificate" FromRole="PersonalData" ToRole="X509Certificate" />
+        </EntityType>
+        <Association Name="FK_PersonalData_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="PersonalData" Type="Self.PersonalData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="uId" />
+            </Principal>
+            <Dependent Role="PersonalData">
+              <PropertyRef Name="uId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalData_X509Certificate">
+          <End Role="X509Certificate" Type="Self.X509Certificate" Multiplicity="1" />
+          <End Role="PersonalData" Type="Self.PersonalData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="X509Certificate">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PersonalData">
+              <PropertyRef Name="ca_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MagicECertCAEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="X509Certificate" EntityType="Self.X509Certificate" />
+          <EntitySet Name="PersonalDatas" EntityType="Self.PersonalData" />
+          <AssociationSet Name="FK_PersonalData_User" Association="Self.FK_PersonalData_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="PersonalData" EntitySet="PersonalDatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalData_X509Certificate" Association="Self.FK_PersonalData_X509Certificate">
+            <End Role="X509Certificate" EntitySet="X509Certificate" />
+            <End Role="PersonalData" EntitySet="PersonalDatas" />
+          </AssociationSet>
+          <FunctionImport Name="spDeleteCA">
+          <Parameter Name="Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spDeletePersonData">
+            <Parameter Name="uId" Mode="In" Type="Int32" />
+            <Parameter Name="caId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spDeleteUser">
+          <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spInsertPersonalData">
+            <Parameter Name="PublicKey" Mode="In" Type="String" />
+            <Parameter Name="PrivateKey" Mode="In" Type="String" />
+            <Parameter Name="SerialNumber" Mode="In" Type="String" />
+            <Parameter Name="UId" Mode="In" Type="Int32" />
+            <Parameter Name="CAId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spInsertUser">
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="Mail" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="spInsertX509Cert">
+            <Parameter Name="version" Mode="In" Type="Double" />
+            <Parameter Name="serial" Mode="In" Type="String" />
+            <Parameter Name="signatureAlgorithm" Mode="In" Type="String" />
+            <Parameter Name="issuer" Mode="In" Type="String" />
+            <Parameter Name="validity" Mode="In" Type="String" />
+            <Parameter Name="subject" Mode="In" Type="String" />
+            <Parameter Name="public" Mode="In" Type="String" />
+            <Parameter Name="extensions" Mode="In" Type="String" />
+            <Parameter Name="signature" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="spUpdateUser">
+            <Parameter Name="Id" Mode="In" Type="Int32" />
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="Mail" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="spUpdateX509Cert">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="Version" Mode="In" Type="String" />
+            <Parameter Name="SerialNumber" Mode="In" Type="String" />
+            <Parameter Name="SignatureAlgorithm" Mode="In" Type="String" />
+            <Parameter Name="IssuerName" Mode="In" Type="String" />
+            <Parameter Name="ValidityPeriod" Mode="In" Type="String" />
+            <Parameter Name="PublicKey" Mode="In" Type="String" />
+            <Parameter Name="SubjectuniqueID" Mode="In" Type="String" />
+            <Parameter Name="Extensions" Mode="In" Type="String" />
+            <Parameter Name="Signature" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="sysdiagrams" EntityType="MagicECertCAModel.sysdiagram" />
+        </EntityContainer>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MagicECertCAModelStoreContainer" CdmEntityContainer="MagicECertCAEntities">
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="MagicECertCAModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="uId" ColumnName="uId" />
+                <ScalarProperty Name="uName" ColumnName="uName" />
+                <ScalarProperty Name="uPasswd" ColumnName="uPasswd" />
+                <ScalarProperty Name="uEmail" ColumnName="uEmail" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="X509Certificate">
+            <EntityTypeMapping TypeName="MagicECertCAModel.X509Certificate">
+              <MappingFragment StoreEntitySet="X509Certificate">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="serial_number" ColumnName="serial_number" />
+                <ScalarProperty Name="signature_algorithm" ColumnName="signature_algorithm" />
+                <ScalarProperty Name="issuer_name" ColumnName="issuer_name" />
+                <ScalarProperty Name="validity_period" ColumnName="validity_period" />
+                <ScalarProperty Name="subject_name" ColumnName="subject_name" />
+                <ScalarProperty Name="public_key" ColumnName="public_key" />
+                <ScalarProperty Name="extensions" ColumnName="extensions" />
+                <ScalarProperty Name="signature" ColumnName="signature" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PersonalDatas">
+            <EntityTypeMapping TypeName="MagicECertCAModel.PersonalData">
+              <MappingFragment StoreEntitySet="PersonalData">
+                <ScalarProperty Name="uId" ColumnName="uId" />
+                <ScalarProperty Name="ca_serial_number" ColumnName="ca_serial_number" />
+                <ScalarProperty Name="ca_id" ColumnName="ca_id" />
+                <ScalarProperty Name="caPriKey" ColumnName="caPriKey" />
+                <ScalarProperty Name="caPubkey" ColumnName="caPubkey" />
+                <ScalarProperty Name="caEnable" ColumnName="caEnable" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spDeleteCA" FunctionName="MagicECertCAModel.Store.spDeleteCA" />
+          <FunctionImportMapping FunctionImportName="spDeletePersonData" FunctionName="MagicECertCAModel.Store.spDeletePersonData" />
+          <FunctionImportMapping FunctionImportName="spDeleteUser" FunctionName="MagicECertCAModel.Store.spDeleteUser" />
+          <FunctionImportMapping FunctionImportName="spInsertPersonalData" FunctionName="MagicECertCAModel.Store.spInsertPersonalData" />
+          <FunctionImportMapping FunctionImportName="spInsertUser" FunctionName="MagicECertCAModel.Store.spInsertUser" />
+          <FunctionImportMapping FunctionImportName="spInsertX509Cert" FunctionName="MagicECertCAModel.Store.spInsertX509Cert" />
+          <FunctionImportMapping FunctionImportName="spUpdateUser" FunctionName="MagicECertCAModel.Store.spUpdateUser" />
+          <FunctionImportMapping FunctionImportName="spUpdateX509Cert" FunctionName="MagicECertCAModel.Store.spUpdateX509Cert" />
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="MagicECertCAModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
